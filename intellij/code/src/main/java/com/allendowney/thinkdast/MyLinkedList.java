@@ -226,7 +226,7 @@ public class MyLinkedList<E> implements List<E> {
 	@Override
 	public E remove(int index) {
 		//TODO: FILL THIS IN!
-		E element = get(ind  ex);
+		E element = get(index);
 		if(index == 0) {
 			head = head.next;
 		}
