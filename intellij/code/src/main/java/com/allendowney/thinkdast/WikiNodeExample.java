@@ -19,28 +19,37 @@ public class WikiNodeExample {
 	
 	public static void main(String[] args) throws IOException {
 		String url = "https://en.wikipedia.org/wiki/Java_(programming_language)";
-		
+		// 👇 User-Agent 설정 추가
+		Document doc = Jsoup.connect(url)
+				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36")
+				.timeout(5000)
+				.get();
+
 		// download and parse the document
-		Connection conn = Jsoup.connect(url);
-		Document doc = conn.get();
+	/*	Connection conn = Jsoup.connect(url);
+		Document doc = conn.get();*/
 		
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
 				
 		// TODO: avoid selecting paragraphs from sidebars and boxouts
 		Elements paras = content.select("p");
-		Element firstPara = paras.get(0);
+		System.out.println("단락 수: " + paras.size());
+		Element firstPara = paras.get(1);
+		System.out.println("First Paragraph: " + firstPara.text());
 		
-		recursiveDFS(firstPara);
+		/*recursiveDFS(firstPara);
 		System.out.println();
 
 		iterativeDFS(firstPara);
 		System.out.println();
-
+*/
 		Iterable<Node> iter = new WikiNodeIterable(firstPara);
 		for (Node node: iter) {
 			if (node instanceof TextNode) {
+
 				System.out.print(node);
+
 			}
 		}
 	}
