@@ -27,7 +27,7 @@ public class WikiPhilosophy {
 	 */
 	public static void main(String[] args) throws IOException {
 		
-		String destination = "https://en.wikipedia.org/wiki/Philosophy";
+		String destination = "https://en.wikipedia.org/wiki/Machine";
 		String source = "https://en.wikipedia.org/wiki/Java_(programming_language)";
 		
 		testConjecture(destination, source, 10);		
@@ -74,6 +74,7 @@ public class WikiPhilosophy {
 	 */
 	public static Element getFirstValidLink(String url) throws IOException {
 		print("Fetching %s...", url);
+
 		Elements paragraphs = wf.fetchWikipedia(url);
 		WikiParser wp = new WikiParser(paragraphs);
 		Element elt = wp.findFirstLink();

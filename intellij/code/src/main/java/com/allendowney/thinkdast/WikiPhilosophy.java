@@ -41,5 +41,36 @@ public class WikiPhilosophy {
      */
     public static void testConjecture(String destination, String source, int limit) throws IOException {
         // TODO: FILL THIS IN!
+       String url = source;
+
+       for (int i = 1; i <= limit; i++) {
+           if(visited.contains(url)) {
+               return;
+           } else {
+               visited.add(url);
+           }
+           Element elt = getFirstValidLink(url);
+           System.out.println(elt);
+           if(elt == null) {
+               return;
+           }
+           System.out.println("**"+elt.text()+"**");
+           url=elt.attr("abs:href");
+           if(url.equals(destination)) {
+               System.out.println("Eureka!!");
+               break;
+           }
+       }
+
     }
+
+    public static Element getFirstValidLink(String url) throws IOException {
+        Elements paragraphs = wf.fetchWikipedia(url);
+        WikiParser wp = new WikiParser(paragraphs);
+        Element elt = wp.findFirstLink();
+        return elt;
+
+    }
+
+
 }

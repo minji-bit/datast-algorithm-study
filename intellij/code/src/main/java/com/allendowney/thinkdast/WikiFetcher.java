@@ -26,9 +26,15 @@ public class WikiFetcher {
 	public Elements fetchWikipedia(String url) throws IOException {
 		sleepIfNeeded();
 
-		// download and parse the document
+		/*// download and parse the document
 		Connection conn = Jsoup.connect(url);
-		Document doc = conn.get();
+		Document doc = conn.get();*/
+
+		// 👇 User-Agent 설정 추가
+		Document doc = Jsoup.connect(url)
+				.userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36")
+				.timeout(5000)
+				.get();
 
 		// select the content text and pull out the paragraphs.
 		Element content = doc.getElementById("mw-content-text");
