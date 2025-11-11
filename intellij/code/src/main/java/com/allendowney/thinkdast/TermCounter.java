@@ -1,9 +1,7 @@
 package com.allendowney.thinkdast;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.jsoup.nodes.Node;
 import org.jsoup.nodes.TextNode;
@@ -37,7 +35,13 @@ public class TermCounter {
 	 */
 	public int size() {
 		// TODO: FILL THIS IN!
-		return 0;
+		Collection<Integer> countList = map.values();
+		Integer[] cntArr = countList.toArray(new Integer[countList.size()]);
+		int count = 0;
+			for(int k:cntArr){
+					count +=k;
+				}
+		return count;
 	}
 
 	/**
