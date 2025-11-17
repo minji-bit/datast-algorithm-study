@@ -80,8 +80,8 @@ public class ProfileMapPut {
 				}
 			}
 		};
-		int startN = 8000;
-		int endMillis = 1000;
+		int startN = 20000;
+		int endMillis = 10000;
 		runProfiler("MyFixedHashMap put", timeable, startN, endMillis);
 	}
 	
