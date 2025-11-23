@@ -107,8 +107,9 @@ public class Card implements Comparable<Card> {
         List<Card> cards = makeDeck();
         Collections.sort(cards);
         System.out.println(cards.get(0));
+        System.out.println(cards.get(1));
         System.out.println(cards.get(51));
-
+/*
         Comparator<Card> comparator = new Comparator<Card>() {
             @Override
             public int compare(Card card1, Card card2) {
@@ -143,6 +144,32 @@ public class Card implements Comparable<Card> {
         // sort the cards using an external comparator
 		Collections.sort(cards, comparator);
         System.out.println(cards.get(0));
+        System.out.println(cards.get(51));*/
+
+        Comparator<Card> comparator2 = new Comparator<Card>() {
+            @Override
+            public int compare(Card card1, Card card2) {
+                if (card1.getRank() < card2.getRank()) {
+                    return -1;
+                }
+                if (card1.getRank() > card2.getRank()) {
+                    return 1;
+                }
+                if (card1.getSuit() < card2.getSuit()) {
+                    return -1;
+                }
+                if (card1.getSuit() > card2.getSuit()) {
+                    return 1;
+                }
+
+                return 0;
+            }
+        };
+        Collections.sort(cards, comparator2);
+        System.out.println(cards.get(0));
+        System.out.println(cards.get(1));
         System.out.println(cards.get(51));
+
     }
+
 }

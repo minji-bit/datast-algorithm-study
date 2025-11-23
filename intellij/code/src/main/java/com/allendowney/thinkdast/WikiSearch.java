@@ -1,13 +1,9 @@
 package com.allendowney.thinkdast;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import redis.clients.jedis.Jedis;
 
@@ -61,7 +57,14 @@ public class WikiSearch {
 	 */
 	public WikiSearch or(WikiSearch that) {
 		// TODO: FILL THIS IN!
-		return null;
+		Map<String,Integer> newMap = map;
+		for(String  key: map.keySet()) {
+			int relevance = totalRelevance(this.getRelevance(key),that.getRelevance(key));
+			newMap.put(key,relevance);
+		}
+		WikiSearch result = new WikiSearch(newMap);
+
+		return result;
 	}
 
 	/**
@@ -72,7 +75,14 @@ public class WikiSearch {
 	 */
 	public WikiSearch and(WikiSearch that) {
 		// TODO: FILL THIS IN!
-		return null;
+		Map<String,Integer> newMap = map;
+		for(String  key: map.keySet()) {
+			if(that.map.containsKey(key)) {
+				newMap.put(key,totalRelevance(map.get(key),that.map.get(key)));
+			}
+		}
+		WikiSearch result = new WikiSearch(newMap);
+		return result;
 	}
 
 	/**
@@ -83,7 +93,12 @@ public class WikiSearch {
 	 */
 	public WikiSearch minus(WikiSearch that) {
 		// TODO: FILL THIS IN!
-		return null;
+		Map<String,Integer> newMap = map;
+		for(String  key: that.map.keySet()) {
+			newMap.remove(key);
+		}
+		WikiSearch result = new WikiSearch(newMap);
+		return result;
 	}
 
 	/**
@@ -105,7 +120,8 @@ public class WikiSearch {
 	 */
 	public List<Entry<String, Integer>> sort() {
 		// TODO: FILL THIS IN!
-		return null;
+		List<Entry<String,Integer>> list = map.entrySet().stream().sorted(Map.Entry.comparingByValue()).toList();
+		return list;
 	}
 
 
