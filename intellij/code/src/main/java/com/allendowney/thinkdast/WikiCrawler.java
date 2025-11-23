@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import java.util.Queue;
 
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 
 import redis.clients.jedis.Jedis;
@@ -56,7 +58,30 @@ public class WikiCrawler {
 	 */
 	public String crawl(boolean testing) throws IOException {
 		// TODO: FILL THIS IN!
-        return null;
+		if(queue.isEmpty()){
+			return null;
+		}
+		String url = queue.poll();
+
+		if(testing) {
+
+			Elements elements= wf.readWikipedia(url);
+
+			index.indexPage(url, elements);
+
+			queueInternalLinks(elements);
+
+
+		} else {
+			if(index.isIndexed(url)) {
+				return null;
+			}
+			Elements paragraphs = wf.fetchWikipedia(url);
+			index.indexPage(url, paragraphs);
+			queueInternalLinks(paragraphs);
+		}
+
+        return url;
 	}
 
 	/**
@@ -67,7 +92,21 @@ public class WikiCrawler {
 	// NOTE: absence of access level modifier means package-level
 	void queueInternalLinks(Elements paragraphs) {
         // TODO: FILL THIS IN!
+		for (Element paragraph: paragraphs) {
+			Elements links = paragraph.select("a[href]");
+			for (Element link: links) {
+				String href = link.attr("href");
+				if(href.startsWith("/wiki/")) {
+					String absURL = "https://en.wikipedia.org"+href;
+
+					queue.offer(absURL);
+				}
+			}
+		}
+
 	}
+
+
 
 	public static void main(String[] args) throws IOException {
 		// make a WikiCrawler
@@ -79,6 +118,7 @@ public class WikiCrawler {
 		// for testing purposes, load up the queue
 		Elements paragraphs = wf.fetchWikipedia(source);
 		wc.queueInternalLinks(paragraphs);
+//		System.out.println(paragraphs);
 
 		// loop until we index a new page
 		String res;
