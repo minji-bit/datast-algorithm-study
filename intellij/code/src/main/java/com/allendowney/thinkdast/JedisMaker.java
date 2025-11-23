@@ -60,13 +60,13 @@ public class JedisMaker {
 		String host = uri.getHost();
 		int port = uri.getPort();
 
-		String[] array = uri.getAuthority().split("[:@]");
-		String auth = array[1];
+		//String[] array = uri.getAuthority().split("[:@]");
+		//String auth = array[1];
 		
 		// connect to the server
 		Jedis jedis = new Jedis(host, port);
 
-		try {
+		/*try {
 			jedis.auth(auth);
 		} catch (Exception e) {
 			System.out.println("Trying to connect to " + host);
@@ -75,7 +75,7 @@ public class JedisMaker {
 			System.out.println("Got exception " + e);
 			printInstructions();
 			return null;
-		}
+		}*/
 		return jedis;
 	}
 

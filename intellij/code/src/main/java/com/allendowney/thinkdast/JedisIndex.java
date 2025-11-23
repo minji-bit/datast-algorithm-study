@@ -78,7 +78,9 @@ public class JedisIndex {
 	 */
 	public Set<String> getURLs(String term) {
         // FILL THIS IN!
-		return null;
+		Set<String> urlSet = jedis.smembers(urlSetKey(term));
+
+		return urlSet;
 	}
 
     /**
@@ -89,7 +91,21 @@ public class JedisIndex {
 	 */
 	public Map<String, Integer> getCounts(String term) {
         // FILL THIS IN!
-		return null;
+		Set<String> urlSet = getURLs(term);
+		//TermCounter tc = new TermCounter(term);
+
+
+		Map<String, Integer> map = new HashMap<>();
+		/*urlSet.stream().forEach((url) -> {
+                //tc.processElements(fetcher.readWikipedia(url));
+				map.put(url,Integer.parseInt(jedis.hget(termCounterKey(url),term)));
+
+        });*/
+		for (String url : urlSet) {
+			map.put(url,getCount(url, term));
+		}
+
+		return map;
 	}
 
     /**
@@ -101,7 +117,8 @@ public class JedisIndex {
 	 */
 	public Integer getCount(String url, String term) {
         // FILL THIS IN!
-		return null;
+		String count = jedis.hget(termCounterKey(url),term);
+		return Integer.parseInt(count);
 	}
 
 	/**
@@ -112,6 +129,35 @@ public class JedisIndex {
 	 */
 	public void indexPage(String url, Elements paragraphs) {
 		// TODO: FILL THIS IN!
+		TermCounter tc = new TermCounter(url);
+
+		tc.processElements(paragraphs);
+
+		pushTermCounterToRedis(tc);
+
+	}
+
+	/**
+	 * Pushes the contents of the TermCounter to Redis.
+	 *
+	 * @param tc
+	 * @return List of return values from Redis.
+	 */
+	public List<Object> pushTermCounterToRedis(TermCounter tc) {
+		Transaction t = jedis.multi();
+
+		String url = tc.getLabel();
+		String hashName = termCounterKey(url);
+
+		t.del(hashName);
+
+		for (String term : tc.keySet()) {
+			int count = tc.get(term);
+			t.sadd(urlSetKey(term), url);
+			t.hset(hashName, term, String.valueOf(count));
+		}
+		List<Object> res = t.exec();
+		return res;
 	}
 
 	/**
